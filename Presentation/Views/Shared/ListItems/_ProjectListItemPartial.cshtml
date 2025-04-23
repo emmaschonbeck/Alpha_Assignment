@@ -1,0 +1,38 @@
+﻿@model ProjectViewModel
+
+<div class="project card" data-project-id="@Model.Id">
+    <div class="card-header">
+        <div class="project-image">
+            <img src="/Images/Logotype/AddProjectLogoImg.svg" alt="Project logotype">
+        </div>
+        <h6 class="project-name">@Model.ProjectName</h6>
+        <span class="client-name">@Model.ClientName</span>
+        <div id="project-actions-container" class="">
+            <div class="project-actions">
+                <button type="button" data-type="edit" data-target="#project-dropdown-@Model.Id" class="btn-edit" onclick="toggleEdit('@Model.Id')">
+                    <img src="/Images/Icons/EditProjectIcon.svg" alt="">
+                </button>
+            </div>
+            <div id="@($"project-dropdown-{Model.Id}")" class="dropdown project-edit-dropdown hide">
+                <div class="dropdown-body">
+                    <nav class="dropdown-actions">
+                        <a class="dropdown-action" href="#" onclick="openEditModal('@Model.Id')">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Edit</span>
+                        </a>
+                        <div class="divider"></div>
+                        <a class="dropdown-action remove">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Delete Project</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <p>@Html.Raw(Model.Description)</p>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>
