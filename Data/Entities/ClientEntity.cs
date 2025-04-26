@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Data.Entities;
 
-[Index(nameof(StatusName), IsUnique = true)]
-public class StatusEntity
+[Index(nameof(ClientName), IsUnique = true)]
+public class ClientEntity
 {
     [Key]
-    public int Id { get; set; }
-    public string StatusName { get; set; } = null!;
+    public string Id { get; set; } = null!; 
+    public string ClientName { get; set; } = null!;
     public ICollection<ProjectEntity> Projects { get; set; } = [];
 }

@@ -9,4 +9,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 {
     public DbSet<StatusEntity> Statuses { get; set; }
     public DbSet<ProjectEntity> Projects { get; set; }
+    public DbSet<ClientEntity> Clients { get; set; }
 }
