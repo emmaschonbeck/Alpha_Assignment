@@ -14,7 +14,8 @@
         </div>
 
         <div class="card-body">
-            <form id="edit-project-form" method="post" novalidate>
+            <form asp-controller="Projects" asp-action="Edit" id="edit-project-form" method="post" novalidate>
+                @Html.AntiForgeryToken()
                 <input type="hidden" id="edit-project-id" />
 
                 <div class="form-group">

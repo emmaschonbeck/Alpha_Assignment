@@ -17,7 +17,11 @@
         {
             @foreach (var project in Model.Projects)
             {
-                @await Html.PartialAsync("ListItems/_ProjectListItemPartial", project)
+                <div class="project-card">
+                    <h3>@((dynamic)project).ProjectName</h3>
+                    <p>Client: @((dynamic)project).ClientName</p>
+                    <p>@((dynamic)project).Description</p>
+                </div>
             }
         }
     </section>

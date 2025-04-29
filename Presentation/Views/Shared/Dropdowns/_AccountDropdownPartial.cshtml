@@ -6,17 +6,20 @@
         <div class="dropdown-header">
             <div class="account-name">
                 <img src="/Images/Users/User-girl-brunette.svg" alt="template avatar">
-                <span>Emma Schönbeck</span>
+                <span>@User.Identity?.Name</span>
             </div>
         </div>
 
         <div class="dropdown-body">
             <div></div>
             <div class="divider"></div>
-            <a class="dropdown-action" href="#">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
+            <form asp-controller="Auth" asp-action="SignOut" method="post" class="logout-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-button">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
 
     </div>

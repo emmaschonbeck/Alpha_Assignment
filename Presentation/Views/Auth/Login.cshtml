@@ -26,10 +26,10 @@
 
                 <div class="form-checkbox-group">
                     <label class="form-checkbox">
-                        <input asp-for="RememberMe" class="form-checkbox-input">
+                        <input asp-for="IsPersistent" class="form-checkbox-input">
                         <span class="form-checkbox-box"></span>
                     </label>
-                    <label asp-for="RememberMe" class="form-label">Remember me</label>
+                    <label asp-for="IsPersistent" class="form-label">Remember me</label>
                 </div>
 
                 <button type="submit" class="btn btn-create-account">Log In</button>
@@ -40,3 +40,7 @@
         <div class="card-footer">Don't have an account? <a asp-controller="Auth" asp-action="SignUp">Sign up</a></div>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Data.Models;
 
-namespace WebApp.Models;
+namespace Business.Models;
 
-public class AddProjectViewModel
+public class AddProjectFormData
 {
     public string ProjectName { get; set; } = null!;
     public string ClientName { get; set; } = null!;
@@ -10,4 +10,7 @@ public class AddProjectViewModel
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public decimal? Budget { get; set; }
+    public string ClientId { get; set; } = null!;
+    public string UserId { get; set; } = null!;
+    public int StatusId { get; set; }
 }

@@ -4,6 +4,7 @@ namespace WebApp.Models;
 
 public class SignUpViewModel
 {
+    [Required]
     [DataType(DataType.Text)]
     [Display(Name = "FullName", Prompt = "Enter your full name")]
     public string FullName { get; set; } = null!;
@@ -15,7 +16,7 @@ public class SignUpViewModel
     public string Email { get; set; } = null!;
 
     [Required]
-    [RegularExpression("^(?=.*[A-Z])(?=.*\\d).{6,}$", ErrorMessage = "Invalid password")]
+    [RegularExpression("^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$", ErrorMessage = "Invalid password")]
     [DataType(DataType.Password)]
     [Display(Name = "Password", Prompt = "Enter password")]
     public string Password { get; set; } = null!;

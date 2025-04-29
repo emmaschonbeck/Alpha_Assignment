@@ -12,6 +12,7 @@
         </div>
 
         <div class="card-body">
+            <partial name="_ValidationSummaryPartial" />
             <form method="post" asp-controller="Auth" asp-action="SignUp" novalidate>
                 <div class="form-group">
                     <label class="form-label" asp-for="FullName"></label>
@@ -49,3 +50,7 @@
         <div class="card-footer">Already have an account? <a asp-controller="Auth" asp-action="Login">Log in</a></div>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

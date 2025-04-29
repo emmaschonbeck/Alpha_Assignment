@@ -120,3 +120,60 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+function copyAddProjectDescription() {
+    const quillEditor = document.querySelector("#add-project-description-wysiwyg-editor .ql-editor");
+    const hiddenTextarea = document.getElementById('add-project-description');
+
+    if (quillEditor && hiddenTextarea) {
+        hiddenTextarea.value = quillEditor.innerHTML;
+    }
+}
+
+document.getElementById("edit-project-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = {
+        Id: document.getElementById("edit-project-id").value,
+        ProjectName: document.getElementById("edit-project-name").value,
+        ClientName: document.getElementById("edit-client-name").value,
+        Description: document.getElementById("edit-project-description").value,
+        StartDate: document.getElementById("edit-start-date").value,
+        EndDate: document.getElementById("edit-end-date").value,
+        Budget: document.getElementById("edit-budget").value
+    };
+
+    const response = await fetch(`/admin/projects/edit/${formData.Id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+        location.reload();
+    } else {
+        alert("Kunde inte uppdatera projektet.");
+    }
+});
+
+async function deleteProject(projectId) {
+    if (!confirm("Är du säker på att du vill radera projektet?")) return;
+
+    const response = await fetch(`/admin/projects/delete`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
+        body: JSON.stringify({ id: projectId })
+    });
+
+    if (response.ok) {
+        location.reload();
+    } else {
+        alert("Kunde inte radera projektet.");
+    }
+}

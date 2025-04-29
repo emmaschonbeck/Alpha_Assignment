@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿namespace Business.Models;
 
-namespace WebApp.Models;
-
-public class AddProjectViewModel
+public class EditProjectDataViewModel
 {
+    public string Id { get; set; } = null!;
     public string ProjectName { get; set; } = null!;
     public string ClientName { get; set; } = null!;
     public string? Description { get; set; }
