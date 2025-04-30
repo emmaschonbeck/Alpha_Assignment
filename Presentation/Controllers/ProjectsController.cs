@@ -4,6 +4,7 @@ using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
@@ -40,6 +41,33 @@ public class ProjectsController(IProjectService projectService) : Controller
     }
 
     [HttpGet]
+    [Route("api/projects/{id}")]
+    public async Task<IActionResult> GetProject(string id)
+    {
+        var result = await _projectService.GetProjectAsync(id);
+
+        if (!result.Succeeded || result.Result == null)
+            return NotFound("Projektet hittades inte.");
+
+        var entity = (ProjectEntity)result.Result;
+
+        var viewModel = new ProjectViewModel
+        {
+            Id = entity.Id,
+            ProjectName = entity.ProjectName,
+            ClientName = entity.ClientName,
+            Description = entity.Description,
+            StartDate = entity.StartDate,
+            EndDate = entity.EndDate,
+            Budget = entity.Budget
+        };
+
+        return Json(viewModel);
+    }
+
+
+
+    [HttpGet]
     [Route("admin/projects/create")]
     public IActionResult Create()
     {
@@ -55,8 +83,6 @@ public class ProjectsController(IProjectService projectService) : Controller
     [Route("admin/projects/create")]
     public async Task<IActionResult> Create(AddProjectViewModel model)
     {
-        if (!ModelState.IsValid)
-            return View(model);
 
         var formData = new AddProjectFormData
         {
@@ -66,7 +92,7 @@ public class ProjectsController(IProjectService projectService) : Controller
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Budget = model.Budget,
-            ClientId = "some-client-id",
+            ClientId = "5E80CFDE-DD4F-4098-8AE4-4FF6F0D54828",
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
             StatusId = 1
         };
@@ -75,11 +101,11 @@ public class ProjectsController(IProjectService projectService) : Controller
 
         if (!result.Succeeded)
         {
-            ModelState.AddModelError(string.Empty, result.Error ?? "Kunde inte skapa projekt.");
-            return View(model);
+            TempData["Error"] = result.Error ?? "Kunde inte skapa projekt.";
+            return RedirectToAction("Index");
         }
 
-        return RedirectToAction("Index", "Projects");
+        return RedirectToAction("Index");
     }
 
     [HttpPost]
@@ -101,9 +127,13 @@ public class ProjectsController(IProjectService projectService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("admin/projects/delete")]
-    public async Task<IActionResult> Delete([FromBody] dynamic body)
+    public async Task<IActionResult> Delete([FromBody] JsonElement body)
     {
-        string id = body.id;
+        if (!body.TryGetProperty("id", out var idProperty))
+            return BadRequest("Ogiltigt ID");
+
+        string id = idProperty.GetString();
+
         if (string.IsNullOrEmpty(id))
             return BadRequest("Ogiltigt ID");
 
@@ -114,5 +144,4 @@ public class ProjectsController(IProjectService projectService) : Controller
 
         return Ok();
     }
-
 }

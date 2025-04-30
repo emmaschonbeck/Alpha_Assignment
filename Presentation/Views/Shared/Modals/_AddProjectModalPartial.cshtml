@@ -14,19 +14,24 @@
         </div>
 
         <div class="card-body">
-            <form asp-controller="Projects" asp-action="Create" method="post" novalidate>
+            <form asp-controller="Projects" asp-action="Create" method="post" novalidate onsubmit="copyAddProjectDescription()">
+                @Html.AntiForgeryToken()
+                @Html.Partial("_ValidationSummaryPartial")
+
                 <div class="form-group">
-                    <label class="form-label">Project Name</label>
-                    <input asp-for="ProjectName" class="form-input" type="text" placeholder="Project Name" required />
+                    <label class="form-label" asp-for="ProjectName"></label>
+                    <input asp-for="ProjectName" class="form-input" type="text" placeholder="Project Name"/>
+                    <span asp-validation-for="ProjectName" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Client Name</label>
-                    <input asp-for="ClientName" class="form-input" type="text" placeholder="Client Name" required />
+                    <label class="form-label" asp-for="ClientName"></label>
+                    <input asp-for="ClientName" class="form-input" type="text" placeholder="Client Name"/>
+                    <span asp-validation-for="ClientName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Description</label>
-                    <textarea asp-for="Description" id="add-project-description" class="hide"></textarea>
+                    <textarea asp-for="Description" id="add-project-description" name="Description" class="hide"></textarea>
 
                     <div class="wysiwyg-wrapper">
                         <div id="add-project-description-wysiwyg-editor" class="wysiwyg-editor">
@@ -52,16 +57,17 @@
                             </span>
                         </div>
                     </div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
                 <div class="form-horizontal-group">
                     <div class="form-group">
                         <label class="form-label">Start Date</label>
-                        <input asp-for="StartDate" class="form-input" type="date" required />
+                        <input id="add-start-date" class="form-input" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
                     </div>
                     <div class="form-group">
                         <label class="form-label">End Date</label>
-                        <input asp-for="EndDate" class="form-input" type="date" />
+                        <input id="add-end-date" class="form-input" type="date" value="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
                     </div>
                 </div>
 

@@ -18,6 +18,7 @@ function openEditModal(projectId) {
     const modal = document.getElementById('edit-project-modal');
     modal.classList.remove('hide');
     modal.classList.add('show');
+    populateEditForm(projectId);
 
     setTimeout(() => {
         if (!window.editProjectDescriptionQuill) {
@@ -36,6 +37,30 @@ function openEditModal(projectId) {
         }
     }, 100);
 }
+
+
+async function populateEditForm(projectId) {
+    const response = await fetch(`/api/projects/${projectId}`);
+    if (!response.ok) {
+        alert("Kunde inte hämta projektdata.");
+        return;
+    }
+
+    const data = await response.json();
+
+    document.getElementById("edit-project-id").value = data.id;
+    document.getElementById("edit-project-name").value = data.projectName;
+    document.getElementById("edit-client-name").value = data.clientName;
+    document.getElementById("edit-project-description").value = data.description;
+    document.getElementById("edit-start-date").value = data.startDate?.substring(0, 10);
+    document.getElementById("edit-end-date").value = data.endDate?.substring(0, 10);
+    document.getElementById("edit-budget").value = data.budget;
+
+    if (window.editProjectDescriptionQuill) {
+        window.editProjectDescriptionQuill.root.innerHTML = data.description;
+    }
+}
+
 
 function toggleEdit(projectId) {
     const dropdown = document.getElementById(`project-dropdown-${projectId}`);

@@ -17,15 +17,19 @@
         {
             @foreach (var project in Model.Projects)
             {
-                <div class="project-card">
-                    <h3>@((dynamic)project).ProjectName</h3>
-                    <p>Client: @((dynamic)project).ClientName</p>
-                    <p>@((dynamic)project).Description</p>
-                </div>
+                @await Html.PartialAsync("_ProjectListItemPartial", project)
             }
+        }
+        else
+        {
+            <p>No projects found.</p>
         }
     </section>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
 @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
 @await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)
