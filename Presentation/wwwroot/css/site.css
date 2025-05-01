@@ -486,13 +486,14 @@ h6 {
 
 /* Submit container */
 .btn-submit-container {
-    padding-top: 2.5rem;
+    padding-top: .5rem;
     padding-bottom: 0.3rem;
 }
 
 
 /* Submit Button */
 .btn-submit {
+    margin-top: auto;
     color: var(--btn-blue-text-color);
     background-color: var(--btn-blue-bg-color);
     border: none;
@@ -642,7 +643,7 @@ h6 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
 
 .card-body {
@@ -747,7 +748,7 @@ form {
     font-style: normal;
     font-family: var(--font-standard);
     padding: 0.2rem;
-    margin: 0.5rem 0;
+    margin: 0;
 }
 
 .form-input {
@@ -777,7 +778,6 @@ form {
     grid-template-columns: auto 1fr;
     align-items: center;
     gap: 0.8rem;
-    margin-bottom: 1rem;
 }
 
     .form-checkbox-group .form-label {
@@ -934,6 +934,11 @@ textarea,
     border-bottom-right-radius: 14px;
 }
 
+#edit-project-description-wysiwyg-editor .ql-editor {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
 /* ============================
    SECTIONS
 ============================ */
@@ -1006,6 +1011,26 @@ textarea,
     width: 550px;
 }
 
+#edit-project-modal .modal-card {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-background-color);
+    color: var(--card-text-color);
+    box-shadow: var(--box-shadow);
+    border-radius: 1rem;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    overflow: visible;
+}
+
+#edit-project-modal .card-body {
+    flex: 1;
+    overflow: visible;
+}
+
 /* ============================
    IMAGES
 ============================ */
@@ -1023,7 +1048,7 @@ textarea,
 
 #projects {
     display: grid;
-    gap: 3rem;
+    gap: 1.5rem;
 }
 
     #projects .project-list {
@@ -1034,7 +1059,18 @@ textarea,
 
     #projects .project.card {
         height: 250px;
+        width: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
+
+        .card p,
+        .card .description {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
 
         #projects .project.card .card-header {
             position: relative;
@@ -1077,6 +1113,20 @@ textarea,
             margin: 0 0.2rem;
         }
 
+#projects .project.card .card-body {
+    padding-top: .5rem;
+}
+
+    #projects .project.card .card-body p {
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+    }
+
     #projects .project #project-actions-container .dropdown {
         box-shadow: 0 0 5px 2px rgba(134, 134, 134, 0.1);
         width: 250px;
@@ -1084,6 +1134,10 @@ textarea,
         position: absolute;
         top: 100%;
         left: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-word;
     }
 
     #projects .project #project-actions-container .project-edit-dropdown {
@@ -1126,3 +1180,39 @@ textarea,
     .logout-button:hover {
         background-color: var(--navlink-bg-hover-color, #cce0ff);
     }
+
+
+/* ============================
+   STATUS
+============================ */
+
+.project-status-tabs {
+    display: flex;
+    gap: 2rem;
+    margin: .5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+    .project-status-tabs .tab {
+        text-decoration: none;
+        font-weight: 600;
+        color: var(--color-light);
+        padding-bottom: 0.5rem;
+        position: relative;
+        transition: color 0.3s;
+    }
+
+        .project-status-tabs .tab.active {
+            color: #2f80ed;
+        }
+
+            .project-status-tabs .tab.active::after {
+                content: "";
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background-color: #2f80ed;
+                border-radius: 2px;
+            }

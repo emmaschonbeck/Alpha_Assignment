@@ -20,9 +20,10 @@ function openEditModal(projectId) {
     modal.classList.add('show');
     populateEditForm(projectId);
 
-    setTimeout(() => {
+    setTimeout(async () => {
+        const textarea = document.getElementById('edit-project-description');
+
         if (!window.editProjectDescriptionQuill) {
-            const textarea = document.getElementById('edit-project-description');
             window.editProjectDescriptionQuill = new Quill('#edit-project-description-wysiwyg-editor', {
                 modules: {
                     toolbar: '#edit-project-description-wysiwyg-toolbar'
@@ -31,10 +32,13 @@ function openEditModal(projectId) {
                 placeholder: 'Type something...'
             });
 
-            editProjectDescriptionQuill.on('text-change', function () {
-                textarea.value = editProjectDescriptionQuill.root.innerHTML;
+            window.editProjectDescriptionQuill.on('text-change', function () {
+                textarea.value = window.editProjectDescriptionQuill.root.innerHTML;
             });
         }
+
+        await populateEditForm(projectId);
+
     }, 100);
 }
 
@@ -52,9 +56,23 @@ async function populateEditForm(projectId) {
     document.getElementById("edit-project-name").value = data.projectName;
     document.getElementById("edit-client-name").value = data.clientName;
     document.getElementById("edit-project-description").value = data.description;
-    document.getElementById("edit-start-date").value = data.startDate?.substring(0, 10);
-    document.getElementById("edit-end-date").value = data.endDate?.substring(0, 10);
+
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
+
+    document.getElementById("edit-start-date").value =
+        data.startDate && data.startDate !== '0001-01-01T00:00:00'
+            ? data.startDate.substring(0, 10)
+            : today.toISOString().split("T")[0];
+
+    document.getElementById("edit-end-date").value =
+        data.endDate
+            ? data.endDate.substring(0, 10)
+            : nextWeek.toISOString().split("T")[0];
+
     document.getElementById("edit-budget").value = data.budget;
+    document.getElementById("edit-status-id").value = data.statusId;
 
     if (window.editProjectDescriptionQuill) {
         window.editProjectDescriptionQuill.root.innerHTML = data.description;
@@ -165,7 +183,8 @@ document.getElementById("edit-project-form").addEventListener("submit", async fu
         Description: document.getElementById("edit-project-description").value,
         StartDate: document.getElementById("edit-start-date").value,
         EndDate: document.getElementById("edit-end-date").value,
-        Budget: document.getElementById("edit-budget").value
+        Budget: document.getElementById("edit-budget").value,
+        StatusId: parseInt(document.getElementById("edit-status-id").value)
     };
 
     const response = await fetch(`/admin/projects/edit/${formData.Id}`, {

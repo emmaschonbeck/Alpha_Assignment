@@ -1,4 +1,4 @@
-﻿@model AddProjectViewModel
+﻿@model Business.Models.AddProjectFormData
 
 <section id="add-project-modal" class="modal hide">
     <div class="card">
@@ -78,6 +78,15 @@
                         <input asp-for="Budget" class="form-input" type="number" step="0.01" placeholder="0" />
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" name="StatusId">
+                        <option value="1">Started</option>
+                        <option value="2">Completed</option>
+                    </select>
+                </div>
+
                 <div class="btn-submit-container">
                     <button type="submit" class="btn btn-submit" onclick="copyAddProjectDescription()">Create</button>
                 </div>

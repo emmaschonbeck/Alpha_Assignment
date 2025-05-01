@@ -1,11 +1,15 @@
 ﻿using Business.Models;
 using Business.Services;
 using Data.Entities;
+using Data.Contexts;
+using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
 using WebApp.Models;
+using System.Threading.Tasks;
 
 namespace WebApp.Controllers;
 
@@ -15,26 +19,44 @@ public class ProjectsController(IProjectService projectService) : Controller
     private readonly IProjectService _projectService = projectService;
 
     [Route("admin/projects")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? status)
     {
-        var result = await _projectService.GetProjectsAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var result = await _projectService.GetProjectsByUserAsync(userId);
 
         if (!result.Succeeded || result.Result == null)
             return View(new ProjectsViewModel());
 
+        var allProjects = result.Result.ToList();
+
         var viewModel = new ProjectsViewModel
         {
-            Projects = result.Result.Select(project =>
+            Projects = (status?.ToLower() switch
             {
-                var entity = (ProjectEntity)project;
-                return new ProjectViewModel
-                {
-                    Id = entity.Id,
-                    ProjectName = entity.ProjectName,
-                    ClientName = entity.ClientName,
-                    Description = entity.Description
-                };
-            }).ToList()
+                "started" => allProjects.Where(p => p.Status.StatusName == "Started"),
+                "completed" => allProjects.Where(p => p.Status.StatusName == "Completed"),
+                _ => allProjects
+            })
+         .Select(entity => new ProjectViewModel
+         {
+             Id = entity.Id,
+             ProjectName = entity.ProjectName,
+             ClientName = entity.ClientName,
+             Description = entity.Description,
+             StartDate = entity.StartDate,
+             EndDate = entity.EndDate,
+             Budget = entity.Budget,
+             StatusId = entity.StatusId
+         }).ToList(),
+
+            StatusCounts = new Dictionary<string, int>
+            {
+                ["All"] = allProjects.Count,
+                ["Started"] = allProjects.Count(p => p.Status.StatusName == "Started"),
+                ["Completed"] = allProjects.Count(p => p.Status.StatusName == "Completed")
+            },
+
+            ActiveStatus = status ?? "all"
         };
 
         return View(viewModel);
@@ -59,7 +81,8 @@ public class ProjectsController(IProjectService projectService) : Controller
             Description = entity.Description,
             StartDate = entity.StartDate,
             EndDate = entity.EndDate,
-            Budget = entity.Budget
+            Budget = entity.Budget,
+            StatusId = entity.StatusId
         };
 
         return Json(viewModel);
@@ -94,7 +117,7 @@ public class ProjectsController(IProjectService projectService) : Controller
             Budget = model.Budget,
             ClientId = "5E80CFDE-DD4F-4098-8AE4-4FF6F0D54828",
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
-            StatusId = 1
+            StatusId = model.StatusId
         };
 
         var result = await _projectService.CreateProjectAsync(formData);
@@ -111,7 +134,7 @@ public class ProjectsController(IProjectService projectService) : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("admin/projects/edit/{id}")]
-    public async Task<IActionResult> Edit(string id, [FromBody] EditProjectDataViewModel model)
+    public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] EditProjectDataViewModel model)
     {
         if (!ModelState.IsValid)
             return BadRequest("Ogiltiga data");

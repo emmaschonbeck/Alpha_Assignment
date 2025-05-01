@@ -20,4 +20,5 @@ public class AddProjectViewModel
 
     [Range(0, double.MaxValue, ErrorMessage = "Budget must be a positive number")]
     public decimal? Budget { get; set; }
+    public int StatusId { get; set; } = 1;
 }

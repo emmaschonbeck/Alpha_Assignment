@@ -1,4 +1,4 @@
-﻿@model EditProjectViewModel
+﻿@model Business.Models.EditProjectDataViewModel
 
 <section id="edit-project-modal" class="modal hide">
     <div class="card modal-card">
@@ -72,6 +72,14 @@
                         <i class="fa-solid fa-dollar-sign"></i>
                         <input id="edit-budget" class="form-input" type="text" placeholder="0" />
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" name="StatusId" id="edit-status-id">
+                        <option value="1">Started</option>
+                        <option value="2">Completed</option>
+                    </select>
                 </div>
 
                 <div class="btn-submit-container">

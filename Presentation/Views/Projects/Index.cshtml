@@ -12,6 +12,18 @@
         </button>
     </div>
 
+    <div class="project-status-tabs">
+        <a href="/admin/projects?status=all" class="tab @(Model.ActiveStatus == "all" ? "active" : "")">
+            ALL [@Model.StatusCounts["All"]]
+        </a>
+        <a href="/admin/projects?status=started" class="tab @(Model.ActiveStatus == "started" ? "active" : "")">
+            STARTED [@Model.StatusCounts["Started"]]
+        </a>
+        <a href="/admin/projects?status=completed" class="tab @(Model.ActiveStatus == "completed" ? "active" : "")">
+            COMPLETED [@Model.StatusCounts["Completed"]]
+        </a>
+    </div>
+
     <section class="project-list">
         @if (Model.Projects != null && Model.Projects.Any())
         {

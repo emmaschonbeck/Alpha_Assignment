@@ -11,6 +11,7 @@ public interface IProjectService
     Task<ProjectResult> CreateProjectAsync(AddProjectFormData formData);
     Task<ProjectResult<object>> GetProjectAsync(string id);
     Task<ProjectResult<IEnumerable<ProjectEntity>>> GetProjectsAsync();
+    Task<ProjectResult<IEnumerable<ProjectEntity>>> GetProjectsByUserAsync(string userId);
     Task<ProjectResult> UpdateProjectAsync(string id, EditProjectDataViewModel formData);
     Task<ProjectResult> DeleteProjectAsync(string id);
 }
@@ -24,6 +25,12 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
     {
         if (formData == null)
             return new ProjectResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
+
+        var statusResult = await _statusService.GetStatusByIdAsync(formData.StatusId);
+        if (!statusResult.Succeeded || statusResult.Result == null)
+        {
+            return new ProjectResult { Succeeded = false, StatusCode = 400, Error = "Invalid status ID." };
+        }
 
         var projectEntity = new ProjectEntity
         {
@@ -39,16 +46,6 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
             UserId = formData.UserId,
             StatusId = formData.StatusId
         };
-
-        var statusResult = await _statusService.GetStatusByIdAsync(1);
-        if (!statusResult.Succeeded || statusResult.Result == null)
-        {
-            return new ProjectResult { Succeeded = false, StatusCode = 400, Error = "Invalid status ID." };
-        }
-
-        var status = statusResult.Result;
-        projectEntity.StatusId = status!.Id;
-
 
         var result = await _projectrepository.AddAsync(projectEntity);
 
@@ -87,6 +84,26 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
             : new ProjectResult<object> { Succeeded = false, StatusCode = 404, Error = $"Project '{id}' was not found" };
     }
 
+    public async Task<ProjectResult<IEnumerable<ProjectEntity>>> GetProjectsByUserAsync(string userId)
+    {
+        var response = await _projectrepository.GetAllAsync
+        (
+            orderByDescending: true,
+            sortBy: s => s.Created,
+            where: x => x.UserId == userId,
+            include => include.User,
+            include => include.Status,
+            include => include.Client
+        );
+
+        return new ProjectResult<IEnumerable<ProjectEntity>>
+        {
+            Succeeded = true,
+            StatusCode = 200,
+            Result = response.Result
+        };
+    }
+
     public async Task<ProjectResult> UpdateProjectAsync(string id, EditProjectDataViewModel formData)
     {
         var response = await _projectrepository.GetAsync(x => x.Id == id);
@@ -102,6 +119,7 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
         project.StartDate = formData.StartDate;
         project.EndDate = formData.EndDate;
         project.Budget = formData.Budget;
+        project.StatusId = formData.StatusId;
 
         var updateResult = await _projectrepository.UpdateAsync(project);
 

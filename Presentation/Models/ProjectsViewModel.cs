@@ -1,8 +1,15 @@
-﻿namespace WebApp.Models;
+﻿using Business.Models;
+
+namespace WebApp.Models;
 
 public class ProjectsViewModel
 {
-    public IEnumerable<ProjectViewModel> Projects { get; set; } = [];
-    public AddProjectViewModel AddProjectFormData { get; set; } = new();
-    public EditProjectViewModel EditProjectFormData { get; set; } = new();
+    public List<ProjectViewModel> Projects { get; set; } = [];
+    public Dictionary<string, int> StatusCounts { get; set; } = new();
+    public string ActiveStatus { get; set; } = "all";
+    public AddProjectFormData AddProjectFormData { get; set; } = new();
+    public EditProjectDataViewModel EditProjectFormData { get; set; } = new();
+
+
 }
+
