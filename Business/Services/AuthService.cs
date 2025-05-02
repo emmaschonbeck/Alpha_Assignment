@@ -30,13 +30,13 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
 
         var passwordValid = await _userManager.CheckPasswordAsync(user, formData.Password);
         if (!passwordValid)
-            return new AuthResult { Succeeded = false, StatusCode = 401, Error = "Invalid email or password." };
+            return new AuthResult { Succeeded = false, StatusCode = 401, Error = "Invalid password." };
 
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id),
-        new Claim(ClaimTypes.Name, user.FullName ?? user.Email)
-    };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.FullName ?? user.Email)
+        };
 
         var claimsIdentity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);

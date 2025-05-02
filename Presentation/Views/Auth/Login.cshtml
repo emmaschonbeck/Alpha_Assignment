@@ -15,13 +15,13 @@
             <form method="post" asp-controller="Auth" asp-action="Login" novalidate>
                 <div class="form-group">
                     <label class="form-label" asp-for="Email"></label>
-                    <input class="form-input" asp-for="Email" />
-                    <span asp-validation-for="Email"></span>
+                    <input class="form-input" asp-for="Email" id="login-email" />
+                    <span class="field-error" id="login-email-error" asp-validation-for="Email"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" asp-for="Password"></label>
-                    <input class="form-input" asp-for="Password" />
-                    <span asp-validation-for="Password"></span>
+                    <input class="form-input" asp-for="Password" id="login-password" />
+                    <span class="field-error" id="login-password-error" asp-validation-for="Password"></span>
                 </div>
 
                 <div class="form-checkbox-group">

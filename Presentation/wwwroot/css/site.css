@@ -385,6 +385,7 @@ h6 {
     align-items: center;
     cursor: pointer;
     transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    margin-top: 1.5rem;
 }
 
     .btn-create-account:hover {
@@ -748,22 +749,26 @@ form {
     font-style: normal;
     font-family: var(--font-standard);
     padding: 0.2rem;
-    margin: 0;
+    margin: .5rem 0 0 0;
 }
 
-.form-input {
-    font-size: 1em;
-    font-weight: var(--font-regular);
-    font-style: normal;
-    font-family: var(--font-standard);
-    color: var(--color-header);
-    padding: 0.5rem 1rem;
-    outline: none;
-    border-radius: 14px;
-    background-color: #fff;
-    border: 1px solid var(--form-input-border-color);
-    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
-}
+    .form-label .edit {
+        margin: 0;
+    }
+
+    .form-input {
+        font-size: 1em;
+        font-weight: var(--font-regular);
+        font-style: normal;
+        font-family: var(--font-standard);
+        color: var(--color-header);
+        padding: 0.5rem 1rem;
+        outline: none;
+        border-radius: 14px;
+        background-color: #fff;
+        border: 1px solid var(--form-input-border-color);
+        transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    }
 
     .form-input:focus {
         border: 1px solid var(--form-input-border-focus-color);
@@ -961,7 +966,7 @@ textarea,
 
 #signup .form-checkbox-group,
 #login .form-checkbox-group {
-    margin: 1.3rem 0;
+    margin: 2.5rem 0 1rem 0;
 }
 
 #sidebar {
@@ -1216,3 +1221,18 @@ textarea,
                 background-color: #2f80ed;
                 border-radius: 2px;
             }
+
+
+
+
+/* ============================
+    VALIDATION AND ERROR
+============================ */
+
+.field-error {
+    color: var(--color-dark-red);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    margin-left: .3rem; 
+}

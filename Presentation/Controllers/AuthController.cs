@@ -1,13 +1,16 @@
 ﻿using Business.Models;
 using Business.Services;
+using Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
 
 namespace WebApp.Controllers;
 
-public class AuthController(IAuthService authService) : Controller
+public class AuthController(IAuthService authService, UserManager<UserEntity> userManager) : Controller
 {
     private readonly IAuthService _authService = authService;
+    private readonly UserManager<UserEntity> _userManager = userManager;
 
     [Route("auth/signup")]
     public IActionResult SignUp()
@@ -34,7 +37,7 @@ public class AuthController(IAuthService authService) : Controller
 
         if (!result.Succeeded)
         {
-            ModelState.AddModelError(string.Empty, result.Error ?? "Something went wrong when signing up");
+            ModelState.AddModelError(nameof(model.Email), result.Error ?? "Something went wrong when signing up");
             return View(model);
         }
 
@@ -66,7 +69,13 @@ public class AuthController(IAuthService authService) : Controller
 
         if (!result.Succeeded)
         {
-            ModelState.AddModelError(string.Empty, result.Error ?? "Invalid email or password");
+            if (result.StatusCode == 404)
+                ModelState.AddModelError(nameof(LoginViewModel.Email), result.Error ?? "User not found");
+            else if (result.StatusCode == 401)
+                ModelState.AddModelError(nameof(LoginViewModel.Password), result.Error ?? "Invalid password");
+            else
+                ModelState.AddModelError(string.Empty, result.Error ?? "Login failed");
+
             return View(model);
         }
 
@@ -81,4 +90,24 @@ public class AuthController(IAuthService authService) : Controller
         await _authService.SignOutAsync();
         return RedirectToAction("Login", "Auth");
     }
+    
+
+    /*
+        ChatGPT 4o - 
+    */
+
+    [HttpGet]
+    [Route("api/check-email")]
+    public async Task<IActionResult> CheckEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return BadRequest("Email is required.");
+
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user != null)
+            return Ok(new { exists = true });
+
+        return Ok(new { exists = false });
+    }
+
 }

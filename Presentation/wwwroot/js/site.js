@@ -221,3 +221,176 @@ async function deleteProject(projectId) {
         alert("Kunde inte radera projektet.");
     }
 }
+
+
+/* ============================
+       VALIDATION SIGNUP
+============================ */
+
+function validateFullName() {
+    const input = document.getElementById("signup-fullname");
+    const error = document.getElementById("signup-fullname-error");
+    const value = input.value.trim();
+
+    const isValid = /^[A-Za-zÅÄÖåäö]+(?:\s+[A-Za-zÅÄÖåäö]+)+$/.test(value);
+
+    if (!value) {
+        error.textContent = "Full name is required.";
+        return false;
+    } else if (!isValid) {
+        error.textContent = "Please enter your full name.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+    /*
+        ChatGPT 4o - 
+    */
+async function validateEmail() {
+    const input = document.getElementById("signup-email");
+    const error = document.getElementById("signup-email-error");
+    const value = input.value.trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!value) {
+        error.textContent = "Email is required.";
+        return false;
+    } else if (!emailRegex.test(value)) {
+        error.textContent = "Enter a valid email address.";
+        return false;
+    }
+
+    try {
+        const response = await fetch(`/api/check-email?email=${encodeURIComponent(value)}`);
+        if (!response.ok) throw new Error("Could not validate email.");
+
+        const result = await response.json();
+        if (result.exists) {
+            error.textContent = "This email is already registered.";
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+        error.textContent = "Could not verify email. Try again.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+function validatePassword() {
+    const input = document.getElementById("signup-password");
+    const error = document.getElementById("signup-password-error");
+    const value = input.value.trim();
+
+    const isValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value);
+
+    if (!value) {
+        error.textContent = "Password is required.";
+        return false;
+    } else if (!isValid) {
+        error.textContent = "Password must be at least 8 characters, include uppercase, lowercase, and a digit.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+function validateConfirmPassword() {
+    const password = document.getElementById("signup-password").value.trim();
+    const confirmPassword = document.getElementById("signup-confirm-password").value.trim();
+    const error = document.getElementById("signup-confirm-password-error");
+
+    if (!confirmPassword) {
+        error.textContent = "Please confirm your password.";
+        return false;
+    } else if (password !== confirmPassword) {
+        error.textContent = "Passwords do not match.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+function validateTerms() {
+    const checkbox = document.getElementById("signup-terms");
+    const error = document.getElementById("signup-terms-error");
+
+    if (!checkbox.checked) {
+        error.textContent = "You must accept the terms and conditions.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+document.getElementById("signup-form").addEventListener("submit", async function (e) {
+    const isNameValid = validateFullName();
+    const isEmailValid = await validateEmail();
+    const isPasswordValid = validatePassword();
+    const isConfirmPasswordValid = validateConfirmPassword();
+    const isTermsValid = validateTerms();
+
+    if (!isNameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid || !isTermsValid) {
+        e.preventDefault();
+    }
+});
+
+/* ============================
+       VALIDATION LOGIN
+============================ */
+
+function validateLoginEmail() {
+    const input = document.getElementById("login-email");
+    const error = document.getElementById("login-email-error");
+    const value = input.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!value) {
+        error.textContent = "Email is required.";
+        return false;
+    } else if (!emailRegex.test(value)) {
+        error.textContent = "Enter a valid email address.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+function validateLoginPassword() {
+    const input = document.getElementById("login-password");
+    const error = document.getElementById("login-password-error");
+    const value = input.value.trim();
+
+    if (!value) {
+        error.textContent = "Password is required.";
+        return false;
+    }
+
+    error.textContent = "";
+    return true;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.querySelector("form[asp-action='Login']");
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+            const isEmailValid = validateLoginEmail();
+            const isPasswordValid = validateLoginPassword();
+
+            if (!isEmailValid || !isPasswordValid) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+

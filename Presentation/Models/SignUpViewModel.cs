@@ -4,7 +4,9 @@ namespace WebApp.Models;
 
 public class SignUpViewModel
 {
-    [Required]
+    [Required(ErrorMessage = "Full name is required")]
+    [StringLength(50, MinimumLength = 3, ErrorMessage = "Full name must be at least 3 characters")]
+    [RegularExpression(@"^[A-Za-zÅÄÖåäö]+(?:\s+[A-Za-zÅÄÖåäö]+)+$", ErrorMessage = "Enter your full name (first and last)")]
     [DataType(DataType.Text)]
     [Display(Name = "FullName", Prompt = "Enter your full name")]
     public string FullName { get; set; } = null!;
