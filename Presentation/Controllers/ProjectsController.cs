@@ -69,7 +69,7 @@ public class ProjectsController(IProjectService projectService) : Controller
         var result = await _projectService.GetProjectAsync(id);
 
         if (!result.Succeeded || result.Result == null)
-            return NotFound("Projektet hittades inte.");
+            return NotFound("Project not found.");
 
         var entity = (ProjectEntity)result.Result;
 
@@ -115,7 +115,6 @@ public class ProjectsController(IProjectService projectService) : Controller
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Budget = model.Budget,
-            ClientId = "5E80CFDE-DD4F-4098-8AE4-4FF6F0D54828",
             UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
             StatusId = model.StatusId
         };
@@ -124,7 +123,7 @@ public class ProjectsController(IProjectService projectService) : Controller
 
         if (!result.Succeeded)
         {
-            TempData["Error"] = result.Error ?? "Kunde inte skapa projekt.";
+            TempData["Error"] = result.Error ?? "Could not create.";
             return RedirectToAction("Index");
         }
 
@@ -137,7 +136,7 @@ public class ProjectsController(IProjectService projectService) : Controller
     public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] EditProjectDataViewModel model)
     {
         if (!ModelState.IsValid)
-            return BadRequest("Ogiltiga data");
+            return BadRequest("Invalid data");
 
         var result = await _projectService.UpdateProjectAsync(id, model);
 
@@ -153,12 +152,12 @@ public class ProjectsController(IProjectService projectService) : Controller
     public async Task<IActionResult> Delete([FromBody] JsonElement body)
     {
         if (!body.TryGetProperty("id", out var idProperty))
-            return BadRequest("Ogiltigt ID");
+            return BadRequest("Invalid ID");
 
         string id = idProperty.GetString();
 
         if (string.IsNullOrEmpty(id))
-            return BadRequest("Ogiltigt ID");
+            return BadRequest("Invalid ID");
 
         var result = await _projectService.DeleteProjectAsync(id);
 

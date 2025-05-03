@@ -14,9 +14,8 @@
         </div>
 
         <div class="card-body">
-            <form asp-controller="Projects" asp-action="Create" method="post" novalidate onsubmit="copyAddProjectDescription()">
+            <form id="add-project-form" asp-controller="Projects" asp-action="Create" method="post" novalidate onsubmit="return validateAddProjectForm();">
                 @Html.AntiForgeryToken()
-                @Html.Partial("_ValidationSummaryPartial")
 
                 <div class="form-group">
                     <label class="form-label" asp-for="ProjectName"></label>

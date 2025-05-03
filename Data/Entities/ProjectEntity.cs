@@ -19,15 +19,9 @@ public class ProjectEntity
     public decimal? Budget { get; set; }
     public DateTime Created { get; set; } = DateTime.Now;
 
-    [ForeignKey(nameof(Client))]
-    public string ClientId { get; set; }
-    public ClientEntity Client { get; set; } = null!;
-
-
     [ForeignKey(nameof(User))]
     public string UserId { get; set; }
     public UserEntity User { get; set; } = null!;
-
 
     [ForeignKey(nameof(Status))]
     public int StatusId { get; set; }

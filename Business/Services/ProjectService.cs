@@ -42,7 +42,6 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
             EndDate = formData.EndDate,
             Budget = formData.Budget,
             Created = DateTime.Now,
-            ClientId = formData.ClientId,
             UserId = formData.UserId,
             StatusId = formData.StatusId
         };
@@ -62,8 +61,7 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
                 sortBy: s => s.Created,
                 where: null,
                 include => include.User,
-                include => include.Status,
-                include => include.Client
+                include => include.Status
             );
 
         return new ProjectResult<IEnumerable<ProjectEntity>> { Succeeded = true, StatusCode = 200, Result = response.Result };
@@ -75,8 +73,7 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
             (
                 where: x => x.Id == id,
                 include => include.User,
-                include => include.Status,
-                include => include.Client
+                include => include.Status
             );
 
         return response.Succeeded
@@ -92,8 +89,7 @@ public class ProjectService(IProjectRepository projectrepository, IStatusService
             sortBy: s => s.Created,
             where: x => x.UserId == userId,
             include => include.User,
-            include => include.Status,
-            include => include.Client
+            include => include.Status
         );
 
         return new ProjectResult<IEnumerable<ProjectEntity>>

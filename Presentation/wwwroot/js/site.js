@@ -394,3 +394,61 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+/* ============================
+  VALIDATION ADD PROJECT FORM
+============================ */
+
+function validateAddProjectForm() {
+    copyAddProjectDescription();
+
+    const nameInput = document.querySelector('[name="ProjectName"]');
+    const clientInput = document.querySelector('[name="ClientName"]');
+    const descriptionInput = document.querySelector('[name="Description"]');
+    const startDateInput = document.getElementById("add-start-date");
+    const endDateInput = document.getElementById("add-end-date");
+    const budgetInput = document.querySelector('[name="Budget"]');
+
+    let isValid = true;
+
+    clearErrors();
+
+    if (!nameInput.value.trim()) {
+        showError(nameInput, "Project name is required.");
+        isValid = false;
+    }
+
+    if (!clientInput.value.trim()) {
+        showError(clientInput, "Client name is required.");
+        isValid = false;
+    }
+
+    if (!descriptionInput.value.trim() || descriptionInput.value.trim() === "<p><br></p>") {
+        showError(document.getElementById("add-project-description-wysiwyg-editor"), "Description is required.");
+        isValid = false;
+    }
+
+    if (!startDateInput.value) {
+        showError(startDateInput, "Start date is required.");
+        isValid = false;
+    }
+
+    if (budgetInput.value && parseFloat(budgetInput.value) < 0) {
+        showError(budgetInput, "Budget must be a positive number.");
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function showError(input, message) {
+    const error = document.createElement("div");
+    error.classList.add("field-error");
+    error.textContent = message;
+    input.classList.add("error");
+    input.closest(".form-group")?.appendChild(error);
+}
+
+function clearErrors() {
+    document.querySelectorAll(".field-error").forEach(e => e.remove());
+    document.querySelectorAll(".form-input.error").forEach(e => e.classList.remove("error"));
+}
