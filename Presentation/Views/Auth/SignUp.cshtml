@@ -33,14 +33,14 @@
                     <input class="form-input" asp-for="ConfirmPassword" id="signup-confirm-password" />
                     <span class="field-error" id="signup-confirm-password-error" asp-validation-for="ConfirmPassword"></span>
                 </div>
-                <div class="form-checkbox-group">
-                    <label class="form-checkbox">
+                <div class="form-group">
+                    <label class="form-checkbox full">
                         <input asp-for="Terms" class="form-checkbox-input" id="signup-terms">
                         <span class="form-checkbox-box"></span>
+                        <span class="form-label">I accept <a href="#">Terms and Conditions</a></span>
                     </label>
-                    <label asp-for="Terms" class="form-label">I accept <a href="#">Terms and Conditions</a></label>
-                    <span class="field-error" id="signup-terms-error"></span>
                 </div>
+                <span class="field-error" id="signup-terms-error"></span>
 
                 <button type="submit" class="btn btn-create-account">Create Account</button>
 
@@ -52,5 +52,8 @@
 </section>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
 }

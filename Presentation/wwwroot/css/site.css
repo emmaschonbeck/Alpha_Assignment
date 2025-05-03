@@ -745,7 +745,7 @@ form {
 .form-label {
     color: var(--color-header);
     font-size: 1em;
-    font-weight: var(--font-semibold);
+    font-weight: var(--font-standard);
     font-style: normal;
     font-family: var(--font-standard);
     padding: 0.2rem;
@@ -801,6 +801,7 @@ form {
     align-items: center;
     cursor: pointer;
     user-select: none;
+    gap: .5rem;
 }
 
 .form-checkbox-input {
@@ -830,6 +831,7 @@ form {
     background-color: var(--grey-100);
     transition: all 0.1s ease-in-out;
     position: relative;
+    margin-top: 8px;
 }
 
     .form-checkbox-box::after {
@@ -1235,4 +1237,19 @@ textarea,
     margin-top: 0.25rem;
     display: block;
     margin-left: .3rem; 
+}
+
+
+
+
+
+
+#signup-terms-error {
+    display: block !important;
+    color: red !important;
+    margin-left: 0.5rem;
+}
+
+.form-checkbox-input.error + .form-checkbox-box {
+    border-color: red;
 }
