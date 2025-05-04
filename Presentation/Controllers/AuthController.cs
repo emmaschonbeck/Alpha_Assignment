@@ -24,7 +24,9 @@ public class AuthController(IAuthService authService, UserManager<UserEntity> us
     public async Task<IActionResult> SignUp(SignUpViewModel model)
     {
         if (!ModelState.IsValid)
-            return View(model);
+        {
+            return View("SignUp", model);
+        }
 
         var formData = new SignUpFormData
         {
@@ -38,7 +40,7 @@ public class AuthController(IAuthService authService, UserManager<UserEntity> us
         if (!result.Succeeded)
         {
             ModelState.AddModelError(nameof(model.Email), result.Error ?? "Something went wrong when signing up");
-            return View(model);
+            return View("SignUp", model);
         }
 
         return RedirectToAction("Login", "Auth");
@@ -93,9 +95,10 @@ public class AuthController(IAuthService authService, UserManager<UserEntity> us
     
 
     /*
-        ChatGPT 4o - 
+        ChatGPT 4o - Detta är en API-metod som tar emot en email via query string och kontrollerar ifall email addressen redan finns registrerad.
+        Om den redan finns så returnerar metoden { exist: true }, om den inte finns registrerad så returnerar den { exist: false }.
+        Denna metoden görs för att förhindra dubletter av email addresser.
     */
-
     [HttpGet]
     [Route("api/check-email")]
     public async Task<IActionResult> CheckEmail([FromQuery] string email)
@@ -109,5 +112,4 @@ public class AuthController(IAuthService authService, UserManager<UserEntity> us
 
         return Ok(new { exists = false });
     }
-
 }

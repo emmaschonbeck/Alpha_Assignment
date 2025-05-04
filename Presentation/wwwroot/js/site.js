@@ -46,7 +46,7 @@ function openEditModal(projectId) {
 async function populateEditForm(projectId) {
     const response = await fetch(`/api/projects/${projectId}`);
     if (!response.ok) {
-        alert("Kunde inte hämta projektdata.");
+        alert("Could not gather project data.");
         return;
     }
 
@@ -83,7 +83,7 @@ async function populateEditForm(projectId) {
 function toggleEdit(projectId) {
     const dropdown = document.getElementById(`project-dropdown-${projectId}`);
     if (!dropdown) {
-        console.warn(`Dropdown hittades inte för id: ${projectId}`);
+        console.warn(`Dropdown could not be found for Id: ${projectId}`);
         return;
     }
     dropdown.classList.toggle('hide');
@@ -178,32 +178,37 @@ function copyAddProjectDescription() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const editForm = document.getElementById("edit-project-form");
-    if (editForm) {
-        editForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
+/* ============================
+       EDIT PROJECT FORM
+============================ */
+const editForm = document.getElementById("edit-project-form");
 
-            if (!validateEditProjectForm()) {
-                return;
-            }
+if (editForm) {
+    editForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-            const formData = {
-                Id: document.getElementById("edit-project-id").value,
-                ProjectName: document.getElementById("edit-project-name").value,
-                ClientName: document.getElementById("edit-client-name").value,
-                Description: document.getElementById("edit-project-description").value,
-                StartDate: document.getElementById("edit-start-date").value,
-                EndDate: document.getElementById("edit-end-date").value,
-                Budget: document.getElementById("edit-budget").value,
-                StatusId: parseInt(document.getElementById("edit-status-id").value)
-            };
+        if (!validateEditProjectForm()) {
+            return;
+        }
 
+        const formData = {
+            Id: document.getElementById("edit-project-id").value,
+            ProjectName: document.getElementById("edit-project-name").value,
+            ClientName: document.getElementById("edit-client-name").value,
+            Description: document.getElementById("edit-project-description").value,
+            StartDate: document.getElementById("edit-start-date").value,
+            EndDate: document.getElementById("edit-end-date").value,
+            Budget: document.getElementById("edit-budget").value,
+            StatusId: parseInt(document.getElementById("edit-status-id").value, 10)
+        };
+
+        try {
             const response = await fetch(`/admin/projects/edit/${formData.Id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                    "RequestVerificationToken":
+                        document.querySelector('input[name="__RequestVerificationToken"]').value
                 },
                 body: JSON.stringify(formData)
             });
@@ -213,12 +218,17 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 alert("Could not update.");
             }
-        });
-    }
-});
+        } catch (err) {
+            console.error(err);
+            alert("Something went wrong while updating.");
+        }
+    });
+}
 
 
-
+/* ============================
+        DELETE PROJECT
+============================ */
 async function deleteProject(projectId) {
     if (!confirm("Are you sure you want to delete this project?")) return;
 
@@ -242,136 +252,89 @@ async function deleteProject(projectId) {
 /* ============================
        VALIDATION SIGNUP
 ============================ */
-
-function validateFullName() {
-    const input = document.getElementById("signup-fullname");
-    const error = document.getElementById("signup-fullname-error");
-    const value = input.value.trim();
-
-    const isValid = /^[A-Za-zÅÄÖåäö]+(?:\s+[A-Za-zÅÄÖåäö]+)+$/.test(value);
-
-    if (!value) {
-        error.textContent = "Full name is required.";
-        return false;
-    } else if (!isValid) {
-        error.textContent = "Please enter your full name.";
-        return false;
-    }
-
-    error.textContent = "";
-    return true;
-}
-
 /*
-   Taget av ChatGPT 4o - Denna funktion validerar användarens email i registreringsformuläret. Den kontrollerar att email inte är tom, 
-   har korrekt format & inte redan finns registrerad i databasen.
-   Funktionen är asynkron och visar ett felmeddelande i formuläret om något är fel, den returnerar sedan true om valideringen lyckas, annars
-   returneras false.
+   Taget av ChatGPT 4o - Funktionen validerar alla fält som jag har i mitt SignUp formulär. Om allt är korrekt ifyllt så visas inget (man skickas
+   då vidare till LogIn sidan), men om något av fälten är inkorrekta, då visas ett felmeddelande under respektive fält. Formuläret kommer ej att
+   skickas om något fel finns.
 */
-async function validateEmail() {
-    const input = document.getElementById("signup-email");
-    const error = document.getElementById("signup-email-error");
-    const value = input.value.trim();
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!value) {
-        error.textContent = "Email is required.";
-        return false;
-    } else if (!emailRegex.test(value)) {
-        error.textContent = "Enter a valid email address.";
-        return false;
-    }
-
-    try {
-        const response = await fetch(`/api/check-email?email=${encodeURIComponent(value)}`);
-        if (!response.ok) throw new Error("Could not validate email.");
-
-        const result = await response.json();
-        if (result.exists) {
-            error.textContent = "This email is already registered.";
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
-        error.textContent = "Could not verify email. Try again.";
-        return false;
-    }
-
-    error.textContent = "";
-    return true;
-}
-
-function validatePassword() {
-    const input = document.getElementById("signup-password");
-    const error = document.getElementById("signup-password-error");
-    const value = input.value.trim();
-
-    const isValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value);
-
-    if (!value) {
-        error.textContent = "Password is required.";
-        return false;
-    } else if (!isValid) {
-        error.textContent = "Password must be at least 8 characters, include uppercase, lowercase, and a digit.";
-        return false;
-    }
-
-    error.textContent = "";
-    return true;
-}
-
-function validateConfirmPassword() {
-    const password = document.getElementById("signup-password").value.trim();
-    const confirmPassword = document.getElementById("signup-confirm-password").value.trim();
-    const error = document.getElementById("signup-confirm-password-error");
-
-    if (!confirmPassword) {
-        error.textContent = "Please confirm your password.";
-        return false;
-    } else if (password !== confirmPassword) {
-        error.textContent = "Passwords do not match.";
-        return false;
-    }
-
-    error.textContent = "";
-    return true;
-}
-
-/*
-   Taget av ChatGPT 4o - 
-*/
-function validateTerms() {
-    console.log("Validating checkbox...");
-    const checkbox = document.getElementById("signup-terms");
-    const error = document.getElementById("signup-terms-error");
-
-    if (!checkbox.checked) {
-        error.textContent = "You must accept the terms and conditions.";
-        error.style.display = "block";
-        return false;
-    }
-
-    error.textContent = "";
-    error.style.display = "none";
-    return true;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("signup-form");
+    const fullName = document.getElementById("signup-fullname");
+    const email = document.getElementById("signup-email");
+    const password = document.getElementById("signup-password");
+    const confirmPassword = document.getElementById("signup-confirm-password");
+    const terms = document.getElementById("terms");
+
+    const errorFullName = document.getElementById("signup-fullname-error");
+    const errorEmail = document.getElementById("signup-email-error");
+    const errorPassword = document.getElementById("signup-password-error");
+    const errorConfirm = document.getElementById("signup-confirm-password-error");
+    const errorTermsContainer = document.getElementById("terms-error-container");
+
     if (!form) return;
 
-    form.addEventListener("submit", async function (e) {
-        e.preventDefault();
+    form.addEventListener("submit", function (e) {
+        let isValid = true;
 
-        const isNameValid = validateFullName();
-        const isEmailValid = await validateEmail();
-        const isPasswordValid = validatePassword();
-        const isConfirmPasswordValid = validateConfirmPassword();
-        const isTermsValid = validateTerms();
+        form.querySelectorAll(".field-error").forEach(el => el.remove());
+        [fullName, email, password, confirmPassword, terms].forEach(el => el.classList.remove("error"));
+        errorTermsContainer.innerHTML = "";
 
-        if (isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsValid) {
-            form.submit();
+        // Full name
+        if (!fullName.value.trim()) {
+            fullName.classList.add("error");
+            showError(fullName, "Full name is required.");
+            isValid = false;
+        }
+
+        // Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim()) {
+            email.classList.add("error");
+            showError(email, "Email is required.");
+            isValid = false;
+        } else if (!emailRegex.test(email.value.trim())) {
+            email.classList.add("error");
+            showError(email, "Invalid email format.");
+            isValid = false;
+        }
+
+        // Password
+        if (!password.value.trim()) {
+            password.classList.add("error");
+            showError(password, "Password is required.");
+            isValid = false;
+        }
+
+        // Confirm password
+        if (!confirmPassword.value.trim()) {
+            confirmPassword.classList.add("error");
+            showError(confirmPassword, "Please confirm your password.");
+            isValid = false;
+        } else if (password.value !== confirmPassword.value) {
+            confirmPassword.classList.add("error");
+            showError(confirmPassword, "Passwords do not match.");
+            isValid = false;
+        }
+
+        // Terms
+        if (!terms.checked) {
+            const error = document.createElement("div");
+            error.className = "field-error";
+            error.textContent = "You must accept the terms.";
+            errorTermsContainer.appendChild(error);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+
+        function showError(input, message) {
+            const error = document.createElement("div");
+            error.className = "field-error";
+            error.textContent = message;
+            input.insertAdjacentElement("afterend", error);
         }
     });
 });
@@ -413,7 +376,8 @@ function validateLoginPassword() {
 }
 
 /*
-   Taget av ChatGPT 4o - 
+   Taget av ChatGPT 4o - Funktionen validerar email och lösenord vid inloggning när man skickar in formuläret, och den stoppar
+   om något är ogiltigt.
 */
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.querySelector("form[asp-action='Login']");
@@ -481,11 +445,13 @@ function validateAddProjectForm() {
 }
 
 function showError(input, message) {
-    const error = document.createElement("div");
-    error.classList.add("field-error");
-    error.textContent = message;
+    const errorSpan = document.getElementById(`${input.id}-error`);
+    if (errorSpan) {
+        errorSpan.textContent = message;
+    }
     input.classList.add("error");
-    input.closest(".form-group")?.appendChild(error);
+    input.classList.add("input-validation-error");
+    isValid = false;
 }
 
 function clearErrors() {
@@ -534,4 +500,21 @@ function validateEditProjectForm() {
     }
 
     return isValid;
+}
+
+function showError(input, message) {
+    const error = document.createElement("div");
+    error.className = "field-error";
+    error.textContent = message;
+
+    input.classList.add("error");
+
+    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains("field-error")) {
+        input.insertAdjacentElement("afterend", error);
+    }
+}
+
+function clearErrors() {
+    document.querySelectorAll(".field-error").forEach(e => e.remove());
+    document.querySelectorAll(".form-input.error, .wysiwyg-editor.error").forEach(e => e.classList.remove("error"));
 }

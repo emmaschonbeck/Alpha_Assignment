@@ -98,9 +98,10 @@ public class ProjectsController(IProjectService projectService) : Controller
     }
 
     /*
-        Med hjälp av Chat GPT-4o - 
+        Med hjälp av Chat GPT-4o - Metoden tar emot data från AddProject-formuläret, den bygger sedan ett AddProjectFormData-objekt och
+        skickar det till ProjectService för att spara det. Om detta lyckas så skickas användaren tillbaka till projektsidan där användaren
+        nu kan se sitt nyskapade projekt, om det inte lyckas så visas felmeddelande.
     */
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("admin/projects/create")]

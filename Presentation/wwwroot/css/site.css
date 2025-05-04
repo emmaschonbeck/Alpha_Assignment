@@ -607,7 +607,6 @@ h6 {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem;
 }
 
     .modal.modal-show {
@@ -625,7 +624,6 @@ h6 {
     box-shadow: var(--box-shadow);
     border-radius: 1rem;
     box-sizing: border-box;
-    max-height: 95vh;
     padding: 1.5rem;
     overflow-y: auto;
     position: relative;
@@ -1239,17 +1237,43 @@ textarea,
     margin-left: .3rem; 
 }
 
+input.form-input.error,
+input.form-input.input-validation-error {
+    border: 1px solid var(--color-red);
+    background-color: #ffeaea;
+}
 
+    .field-error:focus {
+        border-color: var(--color-red);
+        background-color: #ffeaea;
+    }
 
+    #signup-terms-error {
+        display: block !important;
+        color: red !important;
+        margin-left: 0.5rem;
+    }
 
-
-
-#signup-terms-error {
-    display: block !important;
-    color: red !important;
-    margin-left: 0.5rem;
+.form-input.error,
+textarea.error,
+select.error {
+    border: 1px solid var(--color-red);
+    background-color: #ffeaea;
 }
 
 .form-checkbox-input.error + .form-checkbox-box {
-    border-color: red;
+    box-shadow: 0 0 0 2px rgba(255, 102, 102, 0.5);
+}
+
+.form-input.error:focus {
+    outline: none;
+    border-color: var(--color-red);
+    box-shadow: 0 0 0 2px rgba(255, 102, 102, 0.3);
+}
+
+.form-checkbox-group .field-error {
+    grid-column: 2;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: var(--color-red);
 }
